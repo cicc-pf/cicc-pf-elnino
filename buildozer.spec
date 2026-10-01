@@ -1,38 +1,49 @@
-[app]
+name: Build APK
 
-title = CICC PF El Nino
-package.name = ciccpfelnino
-package.domain = br.gov.am.presidentefigueiredo.cicc
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
 
-source.dir = .
-source.include_exts = py,png,jpg,kv,atlas,json
+jobs:
+  build:
+    runs-on: ubuntu-22.04
 
-version = 0.1.0
+    steps:
+      - name: Checkout do codigo
+        uses: actions/checkout@v4
 
-# Fixar versões específicas para evitar quebras
-requirements = python3,kivy==2.3.1,kivymd==1.2.0,pyjnius==1.7.0,requests,urllib3,certifi,charset-normalizer,idna,pillow
+      - name: Configurar Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-orientation = portrait
-fullscreen = 0
+      - name: Instalar dependencias do sistema
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            git zip unzip openjdk-17-jdk \
+            autoconf libtool pkg-config \
+            zlib1g-dev libncurses5-dev libncursesw5-dev \
+            libtinfo5 cmake libffi-dev libssl-dev
 
-android.permissions = INTERNET, ACCESS_NETWORK_STATE
+      - name: Instalar Buildozer e Cython
+        run: |
+          pip install --upgrade pip
+          pip install buildozer==1.5.0 cython==0.29.36
 
-android.api = 33
-android.minapi = 21
-android.ndk = 25b
-android.archs = arm64-v8a, armeabi-v7a
-android.accept_sdk_license = True
+      - name: Configurar cache do Buildozer
+        uses: actions/cache@v4
+        with:
+          path: ~/.buildozer
+          key: buildozer-v3-${{ runner.os }}-${{ hashFiles('buildozer.spec') }}
 
-android.debug_artifact = True
-android.wakelock = False
+      - name: Compilar APK
+        run: |
+          yes | buildozer android debug
 
-# Fixar a branch do p4a para a versão estável que baixamos
-p4a.branch = v2023.09.16
-
-# Forçar a versão do Cython que é compatível
-p4a.cython = 0.29.33
-
-[buildozer]
-
-log_level = 2
-warn_on_root = 1
+      - name: Enviar APK como artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk-cicc-pf-elnino
+          path: bin/*.apk
