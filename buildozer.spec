@@ -9,7 +9,8 @@ source.include_exts = py,png,jpg,kv,atlas,json
 
 version = 0.1.0
 
-requirements = python3,kivy==2.3.1,kivymd==1.2.0,requests,urllib3,certifi,charset-normalizer,idna,pillow
+# Fixar versões específicas para evitar quebras
+requirements = python3,kivy==2.3.1,kivymd==1.2.0,pyjnius==1.7.0,requests,urllib3,certifi,charset-normalizer,idna,pillow
 
 orientation = portrait
 fullscreen = 0
@@ -25,7 +26,11 @@ android.accept_sdk_license = True
 android.debug_artifact = True
 android.wakelock = False
 
+# Fixar a branch do p4a para a versão estável que baixamos
 p4a.branch = v2023.09.16
+
+# Forçar a versão do Cython que é compatível
+p4a.cython = 0.29.33
 
 [buildozer]
 
