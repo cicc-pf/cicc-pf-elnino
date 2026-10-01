@@ -9,7 +9,7 @@ source.include_exts = py,png,jpg,kv,atlas,json
 
 version = 0.1.0
 
-requirements = python3,kivy==2.3.1,kivymd==1.2.0,requests,urllib3,certifi,charset-normalizer,idna,pillow
+requirements = python3==3.12.14,kivy==2.3.1,kivymd==1.2.0,requests,urllib3,certifi,charset-normalizer,idna,pillow
 
 orientation = portrait
 fullscreen = 0
@@ -24,6 +24,8 @@ android.accept_sdk_license = True
 
 android.debug_artifact = True
 android.wakelock = False
+
+p4a.branch = master
 
 [buildozer]
 
