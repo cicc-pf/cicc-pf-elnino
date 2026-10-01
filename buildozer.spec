@@ -1,49 +1,33 @@
-name: Build APK
+[app]
 
-on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
+title = CICC PF El Nino
+package.name = ciccpfelnino
+package.domain = br.gov.am.presidentefigueiredo.cicc
 
-jobs:
-  build:
-    runs-on: ubuntu-22.04
+source.dir = .
+source.include_exts = py,png,jpg,kv,atlas,json
 
-    steps:
-      - name: Checkout do codigo
-        uses: actions/checkout@v4
+version = 0.1.0
 
-      - name: Configurar Python 3.11
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+requirements = python3,kivy==2.3.1,kivymd==1.2.0,pyjnius==1.7.0,requests,urllib3,certifi,charset-normalizer,idna,pillow
 
-      - name: Instalar dependencias do sistema
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            git zip unzip openjdk-17-jdk \
-            autoconf libtool pkg-config \
-            zlib1g-dev libncurses5-dev libncursesw5-dev \
-            libtinfo5 cmake libffi-dev libssl-dev
+orientation = portrait
+fullscreen = 0
 
-      - name: Instalar Buildozer e Cython
-        run: |
-          pip install --upgrade pip
-          pip install buildozer==1.5.0 cython==0.29.36
+android.permissions = INTERNET, ACCESS_NETWORK_STATE
 
-      - name: Configurar cache do Buildozer
-        uses: actions/cache@v4
-        with:
-          path: ~/.buildozer
-          key: buildozer-v3-${{ runner.os }}-${{ hashFiles('buildozer.spec') }}
+android.api = 33
+android.minapi = 21
+android.ndk = 25b
+android.archs = arm64-v8a, armeabi-v7a
+android.accept_sdk_license = True
 
-      - name: Compilar APK
-        run: |
-          yes | buildozer android debug
+android.debug_artifact = True
+android.wakelock = False
 
-      - name: Enviar APK como artefato
-        uses: actions/upload-artifact@v4
-        with:
-          name: apk-cicc-pf-elnino
-          path: bin/*.apk
+p4a.branch = v2023.09.16
+
+[buildozer]
+
+log_level = 2
+warn_on_root = 1
