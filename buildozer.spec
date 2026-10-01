@@ -25,7 +25,7 @@ android.accept_sdk_license = True
 android.debug_artifact = True
 android.wakelock = False
 
-p4a.branch = v2023.09.15
+p4a.branch = v2023.09.16
 
 [buildozer]
 
